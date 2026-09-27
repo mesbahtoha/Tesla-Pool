@@ -22,6 +22,7 @@ npm run dev              # http://localhost:4000
 | `npm run db:seed` | idempotent demo seed (story cast) |
 | `npx vitest run` | unit + API tests |
 | `npm run smoke` | full-lifecycle live test (needs server running; self-cleaning) |
+| `npm run race` | 1-seat claim race: exactly one winner, capacity never exceeded |
 | `node scripts/clean.js <email\|prefix%>` | remove temp users + return pool seats |
 
 ## Deploy — Vercel

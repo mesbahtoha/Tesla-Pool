@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { quoteFare, FARE_RULES } from "../src/utils/fare.js";
 import { haversineKm, coordsFor } from "../src/utils/geo.js";
 import { isCompatible } from "../src/utils/matching.js";
-import { canTransition, assertTransition } from "../src/utils/lifecycle.js";
+import { canTransition, assertTransition, passengerMayCancel } from "../src/utils/lifecycle.js";
 
 describe("fare model — passengerFare = base + distance − poolDiscount", () => {
   it("charges solo fare with no discount", () => {
@@ -90,5 +90,13 @@ describe("lifecycle state machine", () => {
     expect(canTransition("REQUESTED", "COMPLETED")).toBe(false);
     expect(canTransition("COMPLETED", "CANCELLED")).toBe(false);
     expect(() => assertTransition("REQUESTED", "COMPLETED")).toThrow();
+  });
+
+  it("lets passengers cancel only while waiting or matched", () => {
+    expect(passengerMayCancel("REQUESTED")).toBe(true);
+    expect(passengerMayCancel("MATCHED")).toBe(true);
+    expect(passengerMayCancel("DRIVER_ARRIVED")).toBe(false);
+    expect(passengerMayCancel("STARTED")).toBe(false);
+    expect(passengerMayCancel("COMPLETED")).toBe(false);
   });
 });
