@@ -1,0 +1,59 @@
+# One command:  docker compose up --build
+# Spins up Postgres 16, pushes the Prisma schema, seeds the Banani cast,
+# then serves the API (:4000) and the web app (:3000).
+name: dhaka-tesla-pool
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-tesla}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tesla-pool-dev-only}
+      POSTGRES_DB: ${POSTGRES_DB:-teslapool}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tesla} -d ${POSTGRES_DB:-teslapool}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgres://${POSTGRES_USER:-tesla}:${POSTGRES_PASSWORD:-tesla-pool-dev-only}@db:5432/${POSTGRES_DB:-teslapool}?sslmode=disable
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-a-long-random-string-min-32-chars}
+      FRONTEND_URL: http://localhost:3000
+      # Set SEED_DEMO=false to skip demo data on boot.
+      SEED_DEMO: ${SEED_DEMO:-true}
+    ports:
+      - "4000:4000"
+    # Wait for Postgres, sync schema (no separate migrate step needed for the MVP),
+    # seed the Jashim/Nusrat/Rafiq cast idempotently, then serve.
+    command: >
+      sh -c "
+        npx prisma db push &&
+        if [ \"$$SEED_DEMO\" = 'true' ]; then node prisma/seed.js; fi &&
+        node src/server.js
+      "
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:4000}
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:
