@@ -7,8 +7,8 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 const suffix = Date.now();
-const driverEmail = `smoke_driver_${suffix}@t.test`;
-const paxEmail = `smoke_pax_${suffix}@t.test`;
+const driverEmail = `smoke_driver_${suffix}@teslapool.com`;
+const paxEmail = `smoke_pax_${suffix}@teslapool.com`;
 
 async function api(path, { method = "GET", token, body } = {}) {
   const res = await fetch(`${BASE}${path}`, {

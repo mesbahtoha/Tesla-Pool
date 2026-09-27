@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth, homeFor } from "@/lib/auth";
+import { validEmail } from "@/lib/api";
 import { Btn, Card, ErrorNote, Field, inputCls } from "@/components/ui";
 
 export default function LoginPage() {
@@ -16,6 +17,10 @@ export default function LoginPage() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (!validEmail(email)) {
+      setErr("Email must contain @ and .com (e.g. nusrat@teslapool.com)");
+      return;
+    }
     setBusy(true);
     setErr(null);
     try {
@@ -29,24 +34,26 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md">
-      <Card>
-        <h1 className="text-xl font-extrabold">Welcome back</h1>
-        <p className="mt-1 text-sm text-slate-500">Log in to request seats or drive your Tesla.</p>
-        <form onSubmit={submit} className="mt-4 space-y-3">
-          <Field label="Email">
-            <input className={inputCls} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="nusrat@teslapool.test" />
+    <div className="relative mx-auto max-w-md py-8">
+      <div className="dotgrid-faint absolute inset-0 -z-10 rounded-[2rem]" aria-hidden />
+      <Card shadow="pink" className="animate-pop-in">
+        <p className="text-4xl">👋</p>
+        <h1 className="mt-2 font-display text-2xl font-extrabold">Welcome back!</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Log in to grab seats or drive your Tesla.</p>
+        <form onSubmit={submit} className="mt-5 space-y-4" noValidate>
+          <Field label="Email (needs @ and .com)">
+            <input className={inputCls} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="nusrat@teslapool.com" />
           </Field>
           <Field label="Password">
             <input className={inputCls} type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
           </Field>
           <ErrorNote message={err} />
           <Btn type="submit" disabled={busy} className="w-full">
-            {busy ? "Logging in…" : "Log in"}
+            {busy ? "Logging in…" : "Log in →"}
           </Btn>
         </form>
-        <p className="mt-3 text-center text-sm text-slate-500">
-          No account? <Link href="/signup" className="font-semibold text-tesla-700">Sign up</Link>
+        <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
+          New here? <Link href="/signup" className="font-bold text-accent dark:text-accent-dark">Hop on board</Link>
         </p>
       </Card>
     </div>

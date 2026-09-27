@@ -20,10 +20,10 @@ async function upsertUser(name, email, password, role, walletBDT = 0) {
 async function main() {
   console.log("[seed] planting the Banani rush-hour cast…");
 
-  const jashim = await upsertUser("Jashim", "jashim@teslapool.test", "driver123", "DRIVER");
-  const nusrat = await upsertUser("Nusrat", "nusrat@teslapool.test", "passenger123", "PASSENGER", 500);
-  const rafiq = await upsertUser("Rafiq", "rafiq@teslapool.test", "passenger123", "PASSENGER", 500);
-  const shirin = await upsertUser("Shirin", "shirin@teslapool.test", "passenger123", "PASSENGER", 500);
+  const jashim = await upsertUser("Jashim", "jashim@teslapool.com", "driver123", "DRIVER");
+  const nusrat = await upsertUser("Nusrat", "nusrat@teslapool.com", "passenger123", "PASSENGER", 500);
+  const rafiq = await upsertUser("Rafiq", "rafiq@teslapool.com", "passenger123", "PASSENGER", 500);
+  const shirin = await upsertUser("Shirin", "shirin@teslapool.com", "passenger123", "PASSENGER", 500);
 
   // Clean previous demo rides for idempotent seeds (pools before vehicle: RESTRICT).
   await prisma.rideEvent.deleteMany({ where: { actorId: { in: [nusrat.id, rafiq.id, shirin.id, jashim.id] } } });
@@ -104,10 +104,10 @@ async function main() {
   }
 
   console.log("[seed] done:");
-  console.log(`  driver    jashim@teslapool.test / driver123   (Bullet, ${bullet.capacity} seats, online)`);
-  console.log(`  passenger nusrat@teslapool.test / passenger123 (Banani Road 11 → Mohakhali, MATCHED, pooled)`);
-  console.log(`  passenger rafiq@teslapool.test / passenger123  (Banani → Gulshan 1, MATCHED, pooled)`);
-  console.log(`  passenger shirin@teslapool.test / passenger123 (Banani → Farmgate, REQUESTED, 1 seat left!)`);
+  console.log(`  driver    jashim@teslapool.com / driver123   (Bullet, ${bullet.capacity} seats, online)`);
+  console.log(`  passenger nusrat@teslapool.com / passenger123 (Banani Road 11 → Mohakhali, MATCHED, pooled)`);
+  console.log(`  passenger rafiq@teslapool.com / passenger123  (Banani → Gulshan 1, MATCHED, pooled)`);
+  console.log(`  passenger shirin@teslapool.com / passenger123 (Banani → Farmgate, REQUESTED, 1 seat left!)`);
   console.log(`  pool ${pool.id} — ${occupied}/${bullet.capacity} seats taken`);
 }
 
