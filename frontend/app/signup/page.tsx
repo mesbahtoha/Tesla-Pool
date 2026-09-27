@@ -53,7 +53,7 @@ export default function SignupPage() {
           <Field label="Name">
             <input className={inputCls} required value={name} onChange={(e) => setName(e.target.value)} placeholder="Nusrat" />
           </Field>
-          <Field label="Email (needs @ and .com)">
+          <Field label="Email">
             <input className={inputCls} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@teslapool.com" />
           </Field>
           <Field label="Password (min 6 chars)">
