@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL") // uncomment if you set a non-pooled URL for migrations
+}
+
+// ---------- Enums ----------
+enum Role {
+  PASSENGER
+  DRIVER
+  BOTH
+}
+
+enum RideStatus {
+  REQUESTED
+  MATCHED
+  DRIVER_ARRIVED
+  STARTED
+  COMPLETED
+  CANCELLED
+}
+
+enum PoolStatus {
+  REQUESTED
+  MATCHED
+  DRIVER_ARRIVED
+  STARTED
+  COMPLETED
+  CANCELLED
+}
+
+enum MemberStatus {
+  ACTIVE
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentMethod {
+  CASH
+  TESLAPAY
+}
+
+enum TxnType {
+  FARE_CHARGE
+  WALLET_TOPUP
+  REFUND
+}
+
+// ---------- Models ----------
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(PASSENGER)
+  walletPaisa  Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  vehicles     Vehicle[]
+  rideRequests RideRequest[] @relation("PassengerRides")
+  poolMembers  PoolMember[]
+  rideEvents   RideEvent[]
+  transactions Transaction[]
+  drivenPools  Pool[]        @relation("DriverPools")
+
+  @@index([email])
+  @@index([role])
+}
+
+model Vehicle {
+  id          String   @id @default(cuid())
+  driverId    String
+  driver      User     @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  name        String // e.g. "Bullet"
+  capacity    Int      @default(3)
+  isOnline    Boolean  @default(false)
+  currentZone String   @default("Banani")
+  currentLat  Float    @default(23.7937)
+  currentLng  Float    @default(90.4066)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  pools Pool[]
+
+  @@index([driverId])
+  @@index([isOnline])
+  @@index([currentZone])
+}
+
+model Pool {
+  id            String     @id @default(cuid())
+  vehicleId     String
+  vehicle       Vehicle    @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  driverId      String
+  driver        User       @relation("DriverPools", fields: [driverId], references: [id], onDelete: Restrict)
+  status        PoolStatus @default(REQUESTED)
+  pickupZone    String
+  totalSeats    Int
+  occupiedSeats Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  startedAt     DateTime?
+  completedAt   DateTime?
+
+  members  PoolMember[]
+  requests RideRequest[]
+  events   RideEvent[]
+
+  @@index([vehicleId])
+  @@index([driverId])
+  @@index([status])
+  @@index([pickupZone])
+}
+
+model RideRequest {
+  id                 String     @id @default(cuid())
+  passengerId        String
+  passenger          User       @relation("PassengerRides", fields: [passengerId], references: [id], onDelete: Cascade)
+  pickupArea         String
+  pickupLat          Float
+  pickupLng          Float
+  dropoffArea        String
+  dropoffLat         Float
+  dropoffLng         Float
+  distanceKm         Float
+  seatsRequested     Int        @default(1)
+  status             RideStatus @default(REQUESTED)
+  estimatedFarePaisa Int
+  finalFarePaisa     Int?
+  isPooled           Boolean    @default(false)
+  poolId             String?
+  pool               Pool?      @relation(fields: [poolId], references: [id], onDelete: SetNull)
+  paymentMethod      PaymentMethod @default(CASH)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  member PoolMember?
+  events RideEvent[]
+
+  @@index([passengerId])
+  @@index([status])
+  @@index([poolId])
+  @@index([pickupArea])
+  @@index([createdAt])
+}
+
+model PoolMember {
+  id            String       @id @default(cuid())
+  poolId        String
+  pool          Pool         @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  rideRequestId String       @unique
+  rideRequest   RideRequest  @relation(fields: [rideRequestId], references: [id], onDelete: Cascade)
+  passengerId   String
+  passenger     User         @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+  seats         Int          @default(1)
+  farePaisa     Int
+  status        MemberStatus @default(ACTIVE)
+  joinedAt      DateTime     @default(now())
+
+  @@index([poolId])
+  @@index([passengerId])
+}
+
+model RideEvent {
+  id            String    @id @default(cuid())
+  poolId        String?
+  pool          Pool?     @relation(fields: [poolId], references: [id], onDelete: SetNull)
+  rideRequestId String?
+  rideRequest   RideRequest? @relation(fields: [rideRequestId], references: [id], onDelete: SetNull)
+  actorId       String?
+  actor         User?     @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  fromStatus    String
+  toStatus      String
+  note          String?
+  createdAt     DateTime  @default(now())
+
+  @@index([poolId])
+  @@index([rideRequestId])
+  @@index([createdAt])
+}
+
+model Transaction {
+  id          String        @id @default(cuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        TxnType
+  amountPaisa Int
+  method      PaymentMethod @default(TESLAPAY)
+  reference   String?
+  createdAt   DateTime      @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
