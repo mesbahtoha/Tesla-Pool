@@ -135,9 +135,6 @@ html.dark .dotgrid {
   @apply flex w-max items-center whitespace-nowrap will-change-transform;
   animation: marquee 28s linear infinite;
 }
-.marquee-track:hover {
-  animation-play-state: paused;
-}
 @media (max-width: 640px) {
   .marquee-track {
     animation-duration: 20s;
