@@ -179,17 +179,26 @@ export function Confetti({ density = "md" }: { density?: "sm" | "md" }) {
   );
 }
 
-/* ---------- Marquee strip ---------- */
+/* ---------- Marquee strip: seamless right-to-left loop ----------
+   Two identical halves; the track shifts exactly -50%, so the seam is
+   invisible. Each half is repeated enough to overflow any viewport. */
 export function Marquee({ items }: { items: string[] }) {
-  const row = [...items, ...items];
+  const half = [...items, ...items, ...items];
+  const Half = ({ hidden }: { hidden?: boolean }) => (
+    <div className="flex shrink-0 items-center gap-6 pr-6 sm:gap-8 sm:pr-8" aria-hidden={hidden}>
+      {half.map((t, i) => (
+        <span key={i} className="flex items-center gap-6 sm:gap-8">
+          <span>{t}</span>
+          <span className="text-pop-amber">✦</span>
+        </span>
+      ))}
+    </div>
+  );
   return (
-    <div className="overflow-hidden rounded-full border-2 border-ink bg-ink py-2.5 text-cream dark:border-[#FFF7E6] dark:bg-[#FFF7E6] dark:text-ink">
-      <div className="marquee-track font-display text-sm font-bold uppercase tracking-widest">
-        {row.map((t, i) => (
-          <span key={i} className="flex items-center gap-8">
-            {t} <span className="text-pop-amber">✦</span>
-          </span>
-        ))}
+    <div className="-mx-4 overflow-hidden border-y-2 border-ink bg-ink py-2.5 text-cream sm:-mx-6 sm:rounded-full sm:border-2 sm:py-3 dark:border-[#FFF7E6] dark:bg-[#FFF7E6] dark:text-ink">
+      <div className="marquee-track font-display text-xs font-bold uppercase tracking-widest sm:text-sm">
+        <Half />
+        <Half hidden />
       </div>
     </div>
   );

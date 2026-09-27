@@ -277,6 +277,7 @@ npm run race                # needs `npm run dev` running: 1-seat claim race →
 |---|---|---|
 | `POST /api/auth/signup|login` · `GET /api/auth/me` | all | JWT auth (7-day Bearer) |
 | `GET /api/areas` · `GET /api/fare-rules` · `GET /api/health` | public | Zones, fare constants, health |
+| `GET /api/stats` | public | Live homepage snapshot: counts, featured pool, demo-cast statuses (no fares/PII) |
 | `POST /api/rides/request` | passenger | Create request + best-effort auto-match |
 | `GET /api/rides/my` · `GET /api/rides/:id` | owner / assigned driver | Privacy: passengers see only own fare rows |
 | `POST /api/rides/:id/cancel` | owner | While `REQUESTED`/`MATCHED`; seat returned |
