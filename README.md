@@ -254,20 +254,22 @@ npm run dev                 # http://localhost:3000
 cd backend
 npx vitest run              # unit: fare math, matching, lifecycle (10 tests)
 npm run smoke               # needs `npm run dev` running: full lifecycle against live API
+npm run race                # needs `npm run dev` running: 1-seat claim race → exactly one 200 + one 409
 ```
 
 - `tests/unit.test.js` — Nusrat/Rafiq pooled fares, corridor compatibility, capacity never exceeded, invalid transitions rejected
 - `tests/api.test.js` — ownership (user B can't read user A's ride), auth enforcement (live, opt-in via `RUN_LIVE_TESTS=1`)
 - `scripts/smoke.js` — signup → vehicle → topup → request → accept → arrived → started → completed, wallet debited exactly, `422` on illegal transition, `401` unauthenticated; cleans up after itself
+- `scripts/race.js` — two passengers slam the last seat simultaneously; asserts exactly one `200` + one `409` and the pool ends exactly at capacity; cleans up after itself
 
 ## 🔑 Demo credentials (seeded)
 
 | Who | Email | Password | State |
 |---|---|---|---|
-| Jashim (driver) | `jashim@teslapool.test` | `driver123` | Bullet · 3 seats · online |
-| Nusrat | `nusrat@teslapool.test` | `passenger123` | Pooled with Rafiq |
-| Rafiq | `rafiq@teslapool.test` | `passenger123` | Pooled with Nusrat |
-| Shirin | `shirin@teslapool.test` | `passenger123` | Waiting — 1 seat left in Bullet |
+| Jashim (driver) | `jashim@teslapool.com` | `driver123` | Bullet · 3 seats · online |
+| Nusrat | `nusrat@teslapool.com` | `passenger123` | Pooled with Rafiq |
+| Rafiq | `rafiq@teslapool.com` | `passenger123` | Pooled with Nusrat |
+| Shirin | `shirin@teslapool.com` | `passenger123` | Waiting — 1 seat left in Bullet |
 
 ## 📡 API overview
 

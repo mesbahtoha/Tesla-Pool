@@ -13,6 +13,7 @@
     "db:seed": "node prisma/seed.js",
     "db:studio": "prisma studio",
     "smoke": "node scripts/smoke.js",
+    "race": "node scripts/race.js",
     "test": "vitest run"
   },
   "engines": {
