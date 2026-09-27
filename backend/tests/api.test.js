@@ -27,8 +27,8 @@ describe("api integration (live, opt-in via RUN_LIVE_TESTS=1)", () => {
     if (!LIVE) return;
     // Signup two fresh users with unique emails.
     const suffix = Date.now();
-    const a = await request(app).post("/api/auth/signup").send({ name: "AAA", email: `a${suffix}@t.test`, password: "password123", role: "PASSENGER" });
-    const b = await request(app).post("/api/auth/signup").send({ name: "BBB", email: `b${suffix}@t.test`, password: "password123", role: "PASSENGER" });
+    const a = await request(app).post("/api/auth/signup").send({ name: "AAA", email: `a${suffix}@teslapool.com`, password: "password123", role: "PASSENGER" });
+    const b = await request(app).post("/api/auth/signup").send({ name: "BBB", email: `b${suffix}@teslapool.com`, password: "password123", role: "PASSENGER" });
     expect(a.status).toBe(201);
     const ride = await request(app).post("/api/rides/request")
       .set("Authorization", `Bearer ${a.body.token}`)

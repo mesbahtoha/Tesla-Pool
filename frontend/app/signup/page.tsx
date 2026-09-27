@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth, homeFor, Role } from "@/lib/auth";
+import { validEmail } from "@/lib/api";
 import { Btn, Card, ErrorNote, Field, inputCls } from "@/components/ui";
 
 export default function SignupPage() {
@@ -18,6 +19,10 @@ export default function SignupPage() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (!validEmail(email)) {
+      setErr("Email must contain @ and .com (e.g. nusrat@teslapool.com)");
+      return;
+    }
     setBusy(true);
     setErr(null);
     try {
@@ -31,43 +36,51 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md">
-      <Card>
-        <h1 className="text-xl font-extrabold">Join the pool</h1>
-        <p className="mt-1 text-sm text-slate-500">One account — ride, drive, or both.</p>
-        <form onSubmit={submit} className="mt-4 space-y-3">
+    <div className="relative mx-auto max-w-md py-8">
+      <div className="dotgrid-faint absolute inset-0 -z-10 rounded-[2rem]" aria-hidden />
+      <Card shadow="mint" className="animate-pop-in">
+        <p className="text-4xl">🎉</p>
+        <h1 className="mt-2 font-display text-2xl font-extrabold">Join the pool!</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">One account — ride, drive, or both.</p>
+        <form onSubmit={submit} className="mt-5 space-y-4" noValidate>
           <Field label="Name">
             <input className={inputCls} required value={name} onChange={(e) => setName(e.target.value)} placeholder="Nusrat" />
           </Field>
-          <Field label="Email">
-            <input className={inputCls} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
+          <Field label="Email (needs @ and .com)">
+            <input className={inputCls} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@teslapool.com" />
           </Field>
           <Field label="Password (min 6 chars)">
             <input className={inputCls} type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
           </Field>
           <Field label="I want to">
             <div className="grid grid-cols-3 gap-2">
-              {(["PASSENGER", "DRIVER", "BOTH"] as Role[]).map((r) => (
+              {([
+                { r: "PASSENGER" as Role, e: "🧍 Ride" },
+                { r: "DRIVER" as Role, e: "🛺 Drive" },
+                { r: "BOTH" as Role, e: "🔀 Both" },
+              ]).map(({ r, e }) => (
                 <button
                   key={r}
                   type="button"
                   onClick={() => setRole(r)}
-                  className={`rounded-xl border px-2 py-2 text-xs font-bold ${
-                    role === r ? "border-tesla-600 bg-tesla-50 text-tesla-700" : "border-slate-300 text-slate-600"
+                  className={`rounded-2xl border-2 px-2 py-2.5 text-xs font-bold transition-all ${
+                    role === r
+                      ? "border-ink bg-pop-amber text-ink dark:border-[#FFF7E6]"
+                      : "border-slate-300 text-slate-500 dark:border-nightline dark:text-slate-400"
                   }`}
                 >
-                  {r === "PASSENGER" ? "🧍 Ride" : r === "DRIVER" ? "🛺 Drive" : "🔀 Both"}
+                  {e}
                 </button>
               ))}
             </div>
           </Field>
           <ErrorNote message={err} />
           <Btn type="submit" disabled={busy} className="w-full">
-            {busy ? "Creating account…" : "Create account"}
+            {busy ? "Creating account…" : "Create account →"}
           </Btn>
         </form>
-        <p className="mt-3 text-center text-sm text-slate-500">
-          Have an account? <Link href="/login" className="font-semibold text-tesla-700">Log in</Link>
+        <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
+          Have an account? <Link href="/login" className="font-bold text-accent dark:text-accent-dark">Log in</Link>
         </p>
       </Card>
     </div>
