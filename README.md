@@ -27,8 +27,8 @@ one seat left.
 - See every passenger/seat/fare in own pools + driving history
 
 **Pool / system**
-- Documented matching rule (§ Matching), capacity never exceeded (DB row-lock joins)
-- Money in **integer paisa**; hand-testable fare model (§ Fare model)
+- Documented matching rule (see Matching rule below), capacity never exceeded (DB row-lock joins)
+- Money in **integer paisa**; hand-testable fare model (see Fare model below)
 - Full audit trail: `RideEvent` rows for every transition; wallet `Transaction` ledger
 - Meaningful tests: fare math, matching (incl. Nusrat+Rafiq), lifecycle, ownership, live smoke
 
@@ -55,26 +55,28 @@ serverless wrapper + Neon) and **`docker compose up`** (Postgres + API + web).
 
 ### ERD
 
+![Dhaka Tesla Pool ER diagram](docs/erd.svg)
+
 ```mermaid
 erDiagram
     User ||--o{ Vehicle : drives
-    User ||--o{ RideRequest : "requests (passenger)"
-    User ||--o{ Pool : "drives (driver)"
-    User ||--o{ PoolMember : "rides as"
-    User ||--o{ Transaction : "wallet ledger"
+    User ||--o{ RideRequest : requests
+    User ||--o{ Pool : drives
+    User ||--o{ PoolMember : joins
+    User ||--o{ Transaction : holds
     Vehicle ||--o{ Pool : serves
     Pool ||--o{ PoolMember : contains
     Pool ||--o{ RideRequest : groups
     Pool ||--o{ RideEvent : logs
-    RideRequest ||--o| PoolMember : "seated via"
-    RideRequest ||--o{ RideEvent : logs
+    RideRequest ||--o| PoolMember : seats
+    RideRequest ||--o{ RideEvent : audits
 
     User {
         string id PK
-        string email UK
+        string email "unique"
         string name
         string passwordHash
-        enum role "PASSENGER|DRIVER|BOTH"
+        string role "PASSENGER, DRIVER or BOTH"
         int walletPaisa
     }
     Vehicle {
@@ -91,7 +93,7 @@ erDiagram
         string id PK
         string vehicleId FK
         string driverId FK
-        enum status
+        string status
         string pickupZone
         int totalSeats
         int occupiedSeats
@@ -103,7 +105,7 @@ erDiagram
         string dropoffArea
         float distanceKm
         int seatsRequested
-        enum status
+        string status
         int estimatedFarePaisa
         int finalFarePaisa "nullable"
         bool isPooled
@@ -112,7 +114,7 @@ erDiagram
     PoolMember {
         string id PK
         string poolId FK
-        string rideRequestId FK UK
+        string rideRequestId FK "unique"
         string passengerId FK
         int seats
         int farePaisa
@@ -125,9 +127,17 @@ erDiagram
         string fromStatus
         string toStatus
     }
+    Transaction {
+        string id PK
+        string userId FK
+        string type "FARE_CHARGE, WALLET_TOPUP or REFUND"
+        int amountPaisa
+        string method "CASH or TESLAPAY"
+        string reference "nullable"
+    }
 ```
 
-### Matching rule (PRD §4)
+### Matching rule
 
 Two requests are **compatible** iff, in order:
 
@@ -142,7 +152,7 @@ together despite different dropoffs (~3.5 km apart): same pickup corridor, withi
 4 km corridor window. Mirpur → Uttara never matches them. No map APIs — 12 predefined
 Dhaka zones with centroid lat/lng (`backend/src/utils/geo.js`).
 
-### Fare model (PRD §5)
+### Fare model
 
 `passengerFare = baseFare + distanceCharge − poolDiscount`
 
@@ -151,7 +161,7 @@ Dhaka zones with centroid lat/lng (`backend/src/utils/geo.js`).
 - Hand-check: Banani → Mohakhali ≈ 1.77 km → solo `6000 + 5310 = ৳113.10`, pooled `−25% → ≈৳84.80`
 - Solo estimate at request time; re-priced to pooled fare the moment sharing becomes real (2nd member joins); `finalFarePaisa` frozen at completion; TeslaPay auto-debits wallet
 
-### Lifecycle (PRD §3)
+### Lifecycle
 
 `REQUESTED → MATCHED → DRIVER_ARRIVED → STARTED → COMPLETED` (+ `CANCELLED`)
 
@@ -175,7 +185,7 @@ Ride creation never fails because of matching — auto-match errors are caught a
 leaving the ride `REQUESTED` for manual accept. At larger scale: add a `version` column +
 optimistic retry, then a matching queue/worker and read replicas.
 
-## 🧰 Tech stack & why (PRD §7)
+## 🧰 Tech stack & why
 
 | Pick | Alternatives | Why it fits this MVP | When I'd switch |
 |---|---|---|---|

@@ -1,0 +1,195 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 810" font-family="system-ui, -apple-system, sans-serif">
+  <rect x="0" y="0" width="1240" height="810" rx="20" fill="#FFFFFF"/>
+
+  <defs>
+    <style>
+      .attr { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; fill: #1E293B; }
+      .key { font-size: 10px; font-weight: 800; }
+      .lbl { font-size: 12px; font-weight: 800; fill: #475569; paint-order: stroke; stroke: #FFFFFF; stroke-width: 4px; }
+      .title { font-size: 18px; font-weight: 800; fill: #FFFFFF; }
+      .titledark { font-size: 18px; font-weight: 800; fill: #1E293B; }
+      .foot { font-size: 12px; font-weight: 700; fill: #64748B; }
+      .sep { stroke: #E2E8F0; stroke-width: 1; }
+      .wire { stroke: #64748B; stroke-width: 2; fill: none; }
+    </style>
+  </defs>
+
+  <!-- connectors (under boxes) -->
+  <g>
+    <path class="wire" d="M320,90 H375 V110 H430"/>
+    <text class="lbl" x="352" y="82" text-anchor="middle">drives</text>
+    <path class="wire" d="M170,216 V300"/>
+    <text class="lbl" x="170" y="262" text-anchor="middle">requests</text>
+    <path class="wire" d="M170,20 V16 H990 V20"/>
+    <text class="lbl" x="580" y="12" text-anchor="middle">drives</text>
+    <path class="wire" d="M320,160 H375 V360 H430"/>
+    <text class="lbl" x="375" y="262" text-anchor="middle">joins</text>
+    <path class="wire" d="M250,20 V8 H1190 V780 H950 V756"/>
+    <text class="lbl" x="1070" y="774" text-anchor="middle">holds</text>
+    <path class="wire" d="M730,120 H785 V131 H840"/>
+    <text class="lbl" x="757" y="112" text-anchor="middle">serves</text>
+    <path class="wire" d="M550,242 V300"/>
+    <text class="lbl" x="550" y="275" text-anchor="middle">contains</text>
+    <path class="wire" d="M840,220 H785 V528 H320"/>
+    <text class="lbl" x="552" y="522" text-anchor="middle">groups</text>
+    <path class="wire" d="M900,242 V300"/>
+    <text class="lbl" x="900" y="275" text-anchor="middle">logs</text>
+    <path class="wire" d="M320,390 H430"/>
+    <text class="lbl" x="375" y="384" text-anchor="middle">seats</text>
+    <path class="wire" d="M320,548 H950 V496"/>
+    <text class="lbl" x="635" y="542" text-anchor="middle">audits</text>
+  </g>
+
+  <!-- User -->
+  <g>
+    <rect x="20" y="20" width="300" height="196" rx="16" fill="#FFFFFF" stroke="#1E293B" stroke-width="2.5"/>
+    <rect x="20" y="20" width="300" height="40" rx="14" fill="#8B5CF6"/>
+    <rect x="20" y="46" width="300" height="14" fill="#8B5CF6"/>
+    <text class="title" x="36" y="47">User</text>
+    <text class="attr" x="36" y="77">id: int</text><rect x="272" y="63" width="36" height="18" rx="9" fill="#8B5CF6"/><text class="key" x="290" y="76" text-anchor="middle" fill="#FFFFFF">PK</text>
+    <line class="sep" x1="20" y1="86" x2="320" y2="86"/>
+    <text class="attr" x="36" y="103">email: string</text><text x="140" y="103" font-size="10" font-weight="800" fill="#059669">UNIQUE</text>
+    <line class="sep" x1="20" y1="112" x2="320" y2="112"/>
+    <text class="attr" x="36" y="129">name: string</text>
+    <line class="sep" x1="20" y1="138" x2="320" y2="138"/>
+    <text class="attr" x="36" y="155">passwordHash: string</text>
+    <line class="sep" x1="20" y1="164" x2="320" y2="164"/>
+    <text class="attr" x="36" y="181">role: string</text>
+    <line class="sep" x1="20" y1="190" x2="320" y2="190"/>
+    <text class="attr" x="36" y="207">walletPaisa: int</text>
+  </g>
+
+  <!-- Vehicle -->
+  <g>
+    <rect x="430" y="20" width="300" height="248" rx="16" fill="#FFFFFF" stroke="#1E293B" stroke-width="2.5"/>
+    <rect x="430" y="20" width="300" height="40" rx="14" fill="#F472B6"/>
+    <rect x="430" y="46" width="300" height="14" fill="#F472B6"/>
+    <text class="title" x="446" y="47">Vehicle</text>
+    <text class="attr" x="446" y="77">id: int</text><rect x="682" y="63" width="36" height="18" rx="9" fill="#8B5CF6"/><text class="key" x="700" y="76" text-anchor="middle" fill="#FFFFFF">PK</text>
+    <line class="sep" x1="430" y1="86" x2="730" y2="86"/>
+    <text class="attr" x="446" y="103">driverId: string</text><rect x="682" y="89" width="36" height="18" rx="9" fill="#FBBF24"/><text class="key" x="700" y="102" text-anchor="middle" fill="#1E293B">FK</text>
+    <line class="sep" x1="430" y1="112" x2="730" y2="112"/>
+    <text class="attr" x="446" y="129">name: string</text>
+    <line class="sep" x1="430" y1="138" x2="730" y2="138"/>
+    <text class="attr" x="446" y="155">capacity: int</text>
+    <line class="sep" x1="430" y1="164" x2="730" y2="164"/>
+    <text class="attr" x="446" y="181">isOnline: bool</text>
+    <line class="sep" x1="430" y1="190" x2="730" y2="190"/>
+    <text class="attr" x="446" y="207">currentZone: string</text>
+    <line class="sep" x1="430" y1="216" x2="730" y2="216"/>
+    <text class="attr" x="446" y="233">currentLat: float</text>
+    <line class="sep" x1="430" y1="242" x2="730" y2="242"/>
+    <text class="attr" x="446" y="259">currentLng: float</text>
+  </g>
+
+  <!-- Pool -->
+  <g>
+    <rect x="840" y="20" width="300" height="222" rx="16" fill="#FFFFFF" stroke="#1E293B" stroke-width="2.5"/>
+    <rect x="840" y="20" width="300" height="40" rx="14" fill="#FBBF24"/>
+    <rect x="840" y="46" width="300" height="14" fill="#FBBF24"/>
+    <text class="titledark" x="856" y="47">Pool</text>
+    <text class="attr" x="856" y="77">id: int</text><rect x="1092" y="63" width="36" height="18" rx="9" fill="#8B5CF6"/><text class="key" x="1110" y="76" text-anchor="middle" fill="#FFFFFF">PK</text>
+    <line class="sep" x1="840" y1="86" x2="1140" y2="86"/>
+    <text class="attr" x="856" y="103">vehicleId: string</text><rect x="1092" y="89" width="36" height="18" rx="9" fill="#FBBF24"/><text class="key" x="1110" y="102" text-anchor="middle" fill="#1E293B">FK</text>
+    <line class="sep" x1="840" y1="112" x2="1140" y2="112"/>
+    <text class="attr" x="856" y="129">driverId: string</text><rect x="1092" y="115" width="36" height="18" rx="9" fill="#FBBF24"/><text class="key" x="1110" y="128" text-anchor="middle" fill="#1E293B">FK</text>
+    <line class="sep" x1="840" y1="138" x2="1140" y2="138"/>
+    <text class="attr" x="856" y="155">status: string</text>
+    <line class="sep" x1="840" y1="164" x2="1140" y2="164"/>
+    <text class="attr" x="856" y="181">pickupZone: string</text>
+    <line class="sep" x1="840" y1="190" x2="1140" y2="190"/>
+    <text class="attr" x="856" y="207">totalSeats: int</text>
+    <line class="sep" x1="840" y1="216" x2="1140" y2="216"/>
+    <text class="attr" x="856" y="233">occupiedSeats: int</text>
+  </g>
+
+  <!-- RideRequest -->
+  <g>
+    <rect x="20" y="300" width="300" height="326" rx="16" fill="#FFFFFF" stroke="#1E293B" stroke-width="2.5"/>
+    <rect x="20" y="300" width="300" height="40" rx="14" fill="#34D399"/>
+    <rect x="20" y="326" width="300" height="14" fill="#34D399"/>
+    <text class="titledark" x="36" y="327">RideRequest</text>
+    <text class="attr" x="36" y="357">id: int</text><rect x="272" y="343" width="36" height="18" rx="9" fill="#8B5CF6"/><text class="key" x="290" y="356" text-anchor="middle" fill="#FFFFFF">PK</text>
+    <line class="sep" x1="20" y1="366" x2="320" y2="366"/>
+    <text class="attr" x="36" y="383">passengerId: string</text><rect x="272" y="369" width="36" height="18" rx="9" fill="#FBBF24"/><text class="key" x="290" y="382" text-anchor="middle" fill="#1E293B">FK</text>
+    <line class="sep" x1="20" y1="392" x2="320" y2="392"/>
+    <text class="attr" x="36" y="409">pickupArea: string</text>
+    <line class="sep" x1="20" y1="418" x2="320" y2="418"/>
+    <text class="attr" x="36" y="435">dropoffArea: string</text>
+    <line class="sep" x1="20" y1="444" x2="320" y2="444"/>
+    <text class="attr" x="36" y="461">distanceKm: float</text>
+    <line class="sep" x1="20" y1="470" x2="320" y2="470"/>
+    <text class="attr" x="36" y="487">seatsRequested: int</text>
+    <line class="sep" x1="20" y1="496" x2="320" y2="496"/>
+    <text class="attr" x="36" y="513">status: string</text>
+    <line class="sep" x1="20" y1="522" x2="320" y2="522"/>
+    <text class="attr" x="36" y="539">estimatedFarePaisa: int</text>
+    <line class="sep" x1="20" y1="548" x2="320" y2="548"/>
+    <text class="attr" x="36" y="565">finalFarePaisa: int</text>
+    <line class="sep" x1="20" y1="574" x2="320" y2="574"/>
+    <text class="attr" x="36" y="591">isPooled: bool</text>
+    <line class="sep" x1="20" y1="600" x2="320" y2="600"/>
+    <text class="attr" x="36" y="617">poolId: string</text><rect x="272" y="603" width="36" height="18" rx="9" fill="#FBBF24"/><text class="key" x="290" y="616" text-anchor="middle" fill="#1E293B">FK</text>
+  </g>
+
+  <!-- PoolMember -->
+  <g>
+    <rect x="430" y="300" width="300" height="196" rx="16" fill="#FFFFFF" stroke="#1E293B" stroke-width="2.5"/>
+    <rect x="430" y="300" width="300" height="40" rx="14" fill="#8B5CF6"/>
+    <rect x="430" y="326" width="300" height="14" fill="#8B5CF6"/>
+    <text class="title" x="446" y="327">PoolMember</text>
+    <text class="attr" x="446" y="357">id: int</text><rect x="682" y="343" width="36" height="18" rx="9" fill="#8B5CF6"/><text class="key" x="700" y="356" text-anchor="middle" fill="#FFFFFF">PK</text>
+    <line class="sep" x1="430" y1="366" x2="730" y2="366"/>
+    <text class="attr" x="446" y="383">poolId: string</text><rect x="682" y="369" width="36" height="18" rx="9" fill="#FBBF24"/><text class="key" x="700" y="382" text-anchor="middle" fill="#1E293B">FK</text>
+    <line class="sep" x1="430" y1="392" x2="730" y2="392"/>
+    <text class="attr" x="446" y="409">rideRequestId: string</text><rect x="682" y="395" width="36" height="18" rx="9" fill="#FBBF24"/><text class="key" x="700" y="408" text-anchor="middle" fill="#1E293B">FK</text><text x="674" y="409" font-size="10" font-weight="800" fill="#059669" text-anchor="end">UNIQUE</text>
+    <line class="sep" x1="430" y1="418" x2="730" y2="418"/>
+    <text class="attr" x="446" y="435">passengerId: string</text><rect x="682" y="421" width="36" height="18" rx="9" fill="#FBBF24"/><text class="key" x="700" y="434" text-anchor="middle" fill="#1E293B">FK</text>
+    <line class="sep" x1="430" y1="444" x2="730" y2="444"/>
+    <text class="attr" x="446" y="461">seats: int</text>
+    <line class="sep" x1="430" y1="470" x2="730" y2="470"/>
+    <text class="attr" x="446" y="487">farePaisa: int</text>
+  </g>
+
+  <!-- RideEvent -->
+  <g>
+    <rect x="840" y="300" width="300" height="196" rx="16" fill="#FFFFFF" stroke="#1E293B" stroke-width="2.5"/>
+    <rect x="840" y="300" width="300" height="40" rx="14" fill="#F472B6"/>
+    <rect x="840" y="326" width="300" height="14" fill="#F472B6"/>
+    <text class="title" x="856" y="327">RideEvent</text>
+    <text class="attr" x="856" y="357">id: int</text><rect x="1092" y="343" width="36" height="18" rx="9" fill="#8B5CF6"/><text class="key" x="1110" y="356" text-anchor="middle" fill="#FFFFFF">PK</text>
+    <line class="sep" x1="840" y1="366" x2="1140" y2="366"/>
+    <text class="attr" x="856" y="383">poolId: string</text><rect x="1092" y="369" width="36" height="18" rx="9" fill="#FBBF24"/><text class="key" x="1110" y="382" text-anchor="middle" fill="#1E293B">FK</text>
+    <line class="sep" x1="840" y1="392" x2="1140" y2="392"/>
+    <text class="attr" x="856" y="409">rideRequestId: string</text><rect x="1092" y="395" width="36" height="18" rx="9" fill="#FBBF24"/><text class="key" x="1110" y="408" text-anchor="middle" fill="#1E293B">FK</text>
+    <line class="sep" x1="840" y1="418" x2="1140" y2="418"/>
+    <text class="attr" x="856" y="435">actorId: string</text><rect x="1092" y="421" width="36" height="18" rx="9" fill="#FBBF24"/><text class="key" x="1110" y="434" text-anchor="middle" fill="#1E293B">FK</text>
+    <line class="sep" x1="840" y1="444" x2="1140" y2="444"/>
+    <text class="attr" x="856" y="461">fromStatus: string</text>
+    <line class="sep" x1="840" y1="470" x2="1140" y2="470"/>
+    <text class="attr" x="856" y="487">toStatus: string</text>
+  </g>
+
+  <!-- Transaction -->
+  <g>
+    <rect x="840" y="560" width="300" height="196" rx="16" fill="#FFFFFF" stroke="#1E293B" stroke-width="2.5"/>
+    <rect x="840" y="560" width="300" height="40" rx="14" fill="#34D399"/>
+    <rect x="840" y="586" width="300" height="14" fill="#34D399"/>
+    <text class="titledark" x="856" y="587">Transaction</text>
+    <text class="attr" x="856" y="617">id: int</text><rect x="1092" y="603" width="36" height="18" rx="9" fill="#8B5CF6"/><text class="key" x="1110" y="616" text-anchor="middle" fill="#FFFFFF">PK</text>
+    <line class="sep" x1="840" y1="626" x2="1140" y2="626"/>
+    <text class="attr" x="856" y="643">userId: string</text><rect x="1092" y="629" width="36" height="18" rx="9" fill="#FBBF24"/><text class="key" x="1110" y="642" text-anchor="middle" fill="#1E293B">FK</text>
+    <line class="sep" x1="840" y1="652" x2="1140" y2="652"/>
+    <text class="attr" x="856" y="669">type: string</text>
+    <line class="sep" x1="840" y1="678" x2="1140" y2="678"/>
+    <text class="attr" x="856" y="695">amountPaisa: int</text>
+    <line class="sep" x1="840" y1="704" x2="1140" y2="704"/>
+    <text class="attr" x="856" y="721">method: string</text>
+    <line class="sep" x1="840" y1="730" x2="1140" y2="730"/>
+    <text class="attr" x="856" y="747">reference: string</text>
+  </g>
+
+  <!-- footer -->
+  <text class="foot" x="20" y="800">Dhaka Tesla Pool — ERD · 7 tables · money in integer paisa</text>
+  <text class="foot" x="960" y="800">PK primary key · FK foreign key</text>
+</svg>
