@@ -17,6 +17,20 @@ describe("api integration (live, opt-in via RUN_LIVE_TESTS=1)", () => {
     if (!LIVE) expect(true).toBe(true);
   });
 
+  it("serves the public stats snapshot without auth (homepage data)", async () => {
+    if (!LIVE) return;
+    const res = await request(app).get("/api/stats");
+    expect(res.status).toBe(200);
+    for (const k of ["onlineVehicles", "waitingRides", "activePools", "completedTrips", "featured", "cast"]) {
+      expect(res.body).toHaveProperty(k);
+    }
+    expect(Array.isArray(res.body.cast)).toBe(true);
+    expect(res.body.cast.length).toBe(4);
+    // No fares, no emails, no user ids leak through the public snapshot.
+    const dumped = JSON.stringify(res.body);
+    expect(dumped).not.toMatch(/farePaisa|passwordHash|@teslapool\.com/);
+  });
+
   it("rejects unauthenticated ride requests", async () => {
     if (!LIVE) return;
     const res = await request(app).post("/api/rides/request").send({ pickupArea: "Banani", dropoffArea: "Mohakhali" });
