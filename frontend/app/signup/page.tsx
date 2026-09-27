@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth, homeFor, Role } from "@/lib/auth";
 import { validEmail } from "@/lib/api";
-import { Btn, Card, ErrorNote, Field, inputCls } from "@/components/ui";
+import { Btn, Card, ErrorNote, Field, Spinner, inputCls } from "@/components/ui";
 
 export default function SignupPage() {
-  const { signup } = useAuth();
+  const { signup, user, loading } = useAuth();
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -16,6 +16,11 @@ export default function SignupPage() {
   const [role, setRole] = useState<Role>("PASSENGER");
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  // Already authenticated → no business on the signup form.
+  useEffect(() => {
+    if (!loading && user) router.replace(homeFor(user.role));
+  }, [loading, user, router]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -34,6 +39,8 @@ export default function SignupPage() {
       setBusy(false);
     }
   }
+
+  if (loading || user) return <Spinner />;
 
   return (
     <div className="relative mx-auto max-w-md py-8">
