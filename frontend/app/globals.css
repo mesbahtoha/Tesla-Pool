@@ -2,6 +2,156 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------- Playful Geometric base ---------- */
 body {
-  @apply bg-slate-50 text-ink antialiased;
+  @apply bg-cream font-sans text-ink antialiased;
+}
+html.dark body {
+  @apply bg-night text-[#FFF7E6];
+}
+
+/* ---------- Candy button ---------- */
+.btn-candy {
+  @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full border-2 border-ink bg-accent px-5 py-2 text-sm font-bold text-white transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] disabled:cursor-not-allowed disabled:opacity-50;
+  box-shadow: 4px 4px 0px 0px #1e293b;
+}
+.btn-candy:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #1e293b;
+}
+.btn-candy:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px #1e293b;
+}
+html.dark .btn-candy {
+  @apply border-[#FFF7E6];
+  box-shadow: 4px 4px 0px 0px #000;
+}
+html.dark .btn-candy:hover:not(:disabled) {
+  box-shadow: 6px 6px 0px 0px #000;
+}
+html.dark .btn-candy:active:not(:disabled) {
+  box-shadow: 2px 2px 0px 0px #000;
+}
+
+.btn-ghosty {
+  @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border-2 border-ink bg-transparent px-4 py-2 text-sm font-bold text-ink transition-all duration-300 hover:bg-pop-amber disabled:cursor-not-allowed disabled:opacity-50;
+}
+html.dark .btn-ghosty {
+  @apply border-[#FFF7E6] text-[#FFF7E6] hover:bg-[#3A2F5C];
+}
+
+.btn-danger {
+  @apply inline-flex min-h-[44px] items-center justify-center rounded-full border-2 border-ink bg-rose-500 px-4 py-2 text-sm font-bold text-white transition-all duration-300 hover:bg-rose-600 disabled:opacity-50;
+  box-shadow: 4px 4px 0px 0px #1e293b;
+}
+html.dark .btn-danger {
+  @apply border-[#FFF7E6];
+  box-shadow: 4px 4px 0px 0px #000;
+}
+
+/* ---------- Sticker card ---------- */
+.card-sticker {
+  @apply rounded-3xl border-2 border-ink bg-white p-4 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] sm:p-6;
+  box-shadow: 8px 8px 0px 0px #e2e8f0;
+}
+html.dark .card-sticker {
+  @apply border-[#FFF7E6] bg-nightcard;
+  box-shadow: 8px 8px 0px 0px #000;
+}
+.card-sticker.lift:hover {
+  transform: rotate(-0.5deg) scale(1.01);
+}
+.card-shadow-pink {
+  box-shadow: 8px 8px 0px 0px #f472b6 !important;
+}
+.card-shadow-mint {
+  box-shadow: 8px 8px 0px 0px #34d399 !important;
+}
+.card-shadow-amber {
+  box-shadow: 8px 8px 0px 0px #fbbf24 !important;
+}
+@media (max-width: 640px) {
+  .card-sticker {
+    box-shadow: 4px 4px 0px 0px #e2e8f0;
+  }
+  html.dark .card-sticker {
+    box-shadow: 4px 4px 0px 0px #000;
+  }
+}
+
+/* ---------- Chunky inputs ---------- */
+.input-chunky {
+  @apply w-full rounded-2xl border-2 border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-ink outline-none transition-all placeholder:text-slate-400;
+}
+.input-chunky:focus {
+  @apply border-accent;
+  box-shadow: 4px 4px 0px 0px #8b5cf6;
+}
+html.dark .input-chunky {
+  @apply border-nightline bg-night text-[#FFF7E6] placeholder:text-slate-500;
+}
+html.dark .input-chunky:focus {
+  @apply border-accent-dark;
+  box-shadow: 4px 4px 0px 0px #a78bfa;
+}
+.label-chunky {
+  @apply mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500;
+}
+html.dark .label-chunky {
+  @apply text-slate-300;
+}
+
+/* ---------- Status chip ---------- */
+.chip {
+  @apply inline-flex items-center gap-1 rounded-full border-2 border-ink px-3 py-0.5 text-xs font-bold;
+}
+html.dark .chip {
+  @apply border-[#FFF7E6];
+}
+
+/* ---------- Textures ---------- */
+.dotgrid {
+  background-image: radial-gradient(#8b5cf6 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+}
+html.dark .dotgrid {
+  background-image: radial-gradient(#a78bfa 1.5px, transparent 1.5px);
+}
+.dotgrid-faint {
+  background-image: radial-gradient(rgba(139, 92, 246, 0.25) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+}
+.stripes {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    #fbbf24 0 12px,
+    #1e293b 12px 16px
+  );
+}
+
+/* ---------- Marquee ---------- */
+.marquee-track {
+  @apply flex w-max items-center gap-8 whitespace-nowrap pr-8;
+  animation: marquee 22s linear infinite;
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .animate-pop-in,
+  .animate-floaty,
+  .animate-wiggle {
+    animation: none !important;
+  }
+  .btn-candy,
+  .card-sticker.lift {
+    transition: none !important;
+  }
+}
+
+/* ---------- Focus visibility ---------- */
+:focus-visible {
+  outline: 3px solid #8b5cf6;
+  outline-offset: 2px;
 }
