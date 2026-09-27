@@ -32,6 +32,12 @@ export async function api<T = any>(
   return json as T;
 }
 
+// Product rule (mirrors backend Zod refine): email must contain "@" and ".com".
+export function validEmail(v: string): boolean {
+  const s = v.trim().toLowerCase();
+  return s.includes("@") && s.includes(".com");
+}
+
 export function fareBDT(paisa: number | null | undefined): string {
   if (paisa === null || paisa === undefined) return "—";
   return `৳${(paisa / 100).toFixed(2)}`;

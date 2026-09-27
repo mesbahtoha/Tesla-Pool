@@ -6,15 +6,28 @@ const { requireAuth } = require("../middleware/auth");
 
 const router = express.Router();
 
+// Product rule: demo emails must contain "@" and ".com" (e.g. nusrat@teslapool.com).
+// Enforced identically in the web forms; the API is the source of truth.
+function emailWithCom(v) {
+  const s = String(v || "").trim().toLowerCase();
+  return s.includes("@") && s.includes(".com");
+}
+
+const emailField = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .refine(emailWithCom, { message: "Email must contain @ and .com (e.g. nusrat@teslapool.com)" });
+
 const signupSchema = z.object({
   name: z.string().min(2).max(60),
-  email: z.string().email().toLowerCase(),
+  email: emailField,
   password: z.string().min(6).max(100),
   role: z.enum(["PASSENGER", "DRIVER", "BOTH"]).default("PASSENGER"),
 });
 
 const loginSchema = z.object({
-  email: z.string().email().toLowerCase(),
+  email: emailField,
   password: z.string().min(1),
 });
 
