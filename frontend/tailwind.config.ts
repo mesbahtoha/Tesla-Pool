@@ -36,10 +36,6 @@ const config: Config = {
           "25%": { transform: "rotate(3deg)" },
           "75%": { transform: "rotate(-3deg)" },
         },
-        marquee: {
-          "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-50%)" },
-        },
         floaty: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
@@ -48,7 +44,6 @@ const config: Config = {
       animation: {
         "pop-in": "pop-in 0.45s cubic-bezier(0.34,1.56,0.64,1) both",
         wiggle: "wiggle 0.4s ease-in-out",
-        marquee: "marquee 22s linear infinite",
         floaty: "floaty 5s ease-in-out infinite",
       },
     },
