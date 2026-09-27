@@ -40,4 +40,4 @@ The api entrypoint runs `prisma db push`, optional seed (`SEED_DEMO`), then serv
 
 `POST /api/pools/:id/join` wraps the seat claim in an interactive transaction with
 `SELECT … FOR UPDATE` on the pool row (`TX_OPTS = { timeout: 20000 }` — remote-Neon
-friendly). Losers get `409 Pool is full`. See root README § Concurrency.
+friendly). Losers get `409 Pool is full`. See Concurrency in the root README.
