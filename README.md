@@ -334,11 +334,15 @@ flowchart LR
 
 ## 🤖 AI usage
 
-Built with AI assistance (code generation + debugging) under human direction; every
-file was read, executed, and tested locally. Accepted: row-lock join pattern and
-conditional re-pricing (verified by live smoke test). Rejected: an early plan to put
-auto-match inside the request transaction (would hold locks across pool search —
-moved to best-effort after creation; failure there must never 500 a ride request).
+AI was used only as a supporting tool during development, mainly when I needed help with a few complex technical problems, debugging issues, or to explore possible implementation approaches.
+
+The majority of the project was designed and implemented by me, including the overall architecture, database design, API structure, ride and pool lifecycle, matching logic, fare model, authentication, business logic, frontend flows, testing, and deployment setup. I made the final technical decisions based on the project requirements and constraints.
+
+For a few challenging areas, I used AI to help me understand or explore solutions. For example, I used it while working through the row-locking approach for pool capacity and conditional fare re-pricing. I then implemented the approach myself and verified the behavior through testing and the live smoke test.
+
+I also independently evaluated and changed implementation approaches when necessary. For example, I rejected the idea of running auto-matching inside the ride-creation transaction because it could keep database locks open while searching for a compatible pool. I instead implemented auto-matching as a best-effort step after ride creation so that a matching failure would not prevent a ride request from being created.
+
+Overall, AI was a development aid, not the developer of the project. I used it selectively when it could save time or help me work through a difficult problem, while the system design, implementation, technical decisions, testing, and final code remained under my ownership.
 
 ## 📹 Demo video
 
