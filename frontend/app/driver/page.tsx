@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { api, fareBDT, AREAS_FALLBACK } from "@/lib/api";
-import { Badge, Btn, Card, Empty, ErrorNote, Field, Spinner, Stepper, inputCls } from "@/components/ui";
+import { Btn, Card, Chip, Empty, ErrorNote, Field, IconBadge, SectionHead, Spinner, Stepper, inputCls } from "@/components/ui";
 
 interface WaitRide {
   id: string;
@@ -44,6 +44,12 @@ const NEXT: Record<string, string[]> = {
   REQUESTED: [],
 };
 
+const NEXT_LABEL: Record<string, string> = {
+  DRIVER_ARRIVED: "📍 I've arrived",
+  STARTED: "▶ Start trip",
+  COMPLETED: "✔ Complete trip",
+};
+
 export default function DriverPage() {
   const { user, token, loading } = useAuth();
   const router = useRouter();
@@ -53,7 +59,6 @@ export default function DriverPage() {
   const [picked, setPicked] = useState<string[]>([]);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  // vehicle form
   const [vname, setVname] = useState("Bullet");
   const [vcap, setVcap] = useState(3);
   const [vzone, setVzone] = useState("Banani");
@@ -154,22 +159,29 @@ export default function DriverPage() {
   const livePools = pools.filter((p) => !["COMPLETED", "CANCELLED"].includes(p.status));
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-xl font-extrabold">Salaam, {user.name} 🛺</h1>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="font-display text-2xl font-extrabold sm:text-3xl">Salaam, {user.name}! 🛺</h1>
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Fill those seats, split those fares.</p>
+        </div>
         {vehicle && (
-          <Btn variant={vehicle.isOnline ? "ghost" : "primary"} onClick={toggleOnline}>
-            {vehicle.isOnline ? "🟢 Online — go offline" : "⚪ Offline — go online"}
-          </Btn>
+          <button
+            onClick={toggleOnline}
+            className={`rounded-full border-2 border-ink px-4 py-2 text-sm font-bold dark:border-[#FFF7E6] ${vehicle.isOnline ? "bg-pop-mint" : "bg-white dark:bg-nightcard"}`}
+          >
+            {vehicle.isOnline ? "🟢 Online — tap to go offline" : "⚪ Offline — tap to go online"}
+          </button>
         )}
       </div>
 
       <ErrorNote message={err} />
 
-      <Card>
-        <h2 className="font-bold">My Tesla</h2>
-        {!vehicle && <p className="mt-1 text-sm text-slate-500">Register your Tesla to start accepting rides.</p>}
-        <div className="mt-3 grid gap-3 sm:grid-cols-3">
+      <Card shadow="amber" pop>
+        <IconBadge emoji="🛺" bg="bg-pop-amber" />
+        <h2 className="font-display text-xl font-extrabold">My Tesla</h2>
+        {!vehicle && <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Register your Tesla to start accepting rides.</p>}
+        <div className="mt-4 grid gap-4 sm:grid-cols-3">
           <Field label="Tesla name">
             <input className={inputCls} value={vname} onChange={(e) => setVname(e.target.value)} placeholder="Bullet" />
           </Field>
@@ -184,38 +196,38 @@ export default function DriverPage() {
             </select>
           </Field>
         </div>
-        <div className="mt-3 flex gap-2">
-          <Btn onClick={() => saveVehicle(true)} disabled={busy}>{vehicle ? "Save + go online" : "Register + go online"}</Btn>
-          {vehicle && <Btn variant="ghost" onClick={() => saveVehicle(vehicle.isOnline)} disabled={busy}>Save</Btn>}
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Btn onClick={() => saveVehicle(true)} disabled={busy}>{vehicle ? "Save + go online" : "Register + go online →"}</Btn>
+          {vehicle && <Btn variant="ghost" onClick={() => saveVehicle(vehicle.isOnline)} disabled={busy}>Save only</Btn>}
         </div>
         {vehicle && (
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-3 text-sm font-medium text-slate-500 dark:text-slate-400">
             {vehicle.name} · {vehicle.capacity} seats · based in {vehicle.currentZone} · {vehicle.isOnline ? "🟢 online" : "⚪ offline"}
           </p>
         )}
       </Card>
 
       {vehicle && vehicle.isOnline && (
-        <Card>
-          <div className="flex items-center justify-between">
-            <h2 className="font-bold">Waiting requests ({waiting.length})</h2>
+        <Card shadow="mint" pop>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="font-display text-xl font-extrabold">Waiting requests ({waiting.length})</h2>
             {picked.length > 0 && (
               <Btn onClick={accept} disabled={busy}>
-                Accept {picked.length} → new pool
+                Accept {picked.length} → new pool 🛺
               </Btn>
             )}
           </div>
-          <p className="mt-1 text-xs text-slate-500">
-            Tick compatible trips (same pickup corridor) to pool them — capacity {vehicle.capacity} enforced.
+          <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
+            Tick compatible trips (same pickup corridor) to pool them — capacity {vehicle.capacity} enforced by the API.
           </p>
-          <div className="mt-3 space-y-2">
-            {waiting.length === 0 && <Empty title="No waiting requests" hint="New passenger requests appear here in real time — refresh to check." />}
+          <div className="mt-4 space-y-2">
+            {waiting.length === 0 && <Empty title="No waiting requests" hint="New passenger requests appear here — hit refresh." emoji="📭" />}
             {waiting.map((r) => (
-              <label key={r.id} className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-sm ${picked.includes(r.id) ? "border-tesla-600 bg-tesla-50" : "border-slate-200"}`}>
-                <input type="checkbox" checked={picked.includes(r.id)} onChange={() => togglePick(r.id)} className="h-4 w-4 accent-emerald-600" />
+              <label key={r.id} className={`flex cursor-pointer items-center gap-3 rounded-2xl border-2 p-3 text-sm font-medium transition-all ${picked.includes(r.id) ? "border-ink bg-pop-amber/40 dark:border-[#FFF7E6]" : "border-slate-200 dark:border-nightline"}`}>
+                <input type="checkbox" checked={picked.includes(r.id)} onChange={() => togglePick(r.id)} className="h-5 w-5 accent-[#8B5CF6]" />
                 <span className="flex-1">
-                  <span className="font-semibold">{r.pickupArea} → {r.dropoffArea}</span>
-                  <span className="text-slate-500"> · {r.passenger.name} · {r.seatsRequested} seat{r.seatsRequested > 1 ? "s" : ""} · {fareBDT(r.estimatedFarePaisa)}</span>
+                  <span className="font-bold">{r.pickupArea} → {r.dropoffArea}</span>
+                  <span className="text-slate-500 dark:text-slate-400"> · {r.passenger.name} · {r.seatsRequested} seat{r.seatsRequested > 1 ? "s" : ""} · {fareBDT(r.estimatedFarePaisa)}</span>
                 </span>
               </label>
             ))}
@@ -223,40 +235,36 @@ export default function DriverPage() {
         </Card>
       )}
 
-      <section className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="font-bold">My pools ({livePools.length} live)</h2>
+      <section className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <SectionHead title={`My pools (${livePools.length} live)`} />
           <Btn variant="ghost" onClick={load}>↻ Refresh</Btn>
         </div>
         {pools.length === 0 && <Empty title="No pools yet" hint="Accept waiting requests to fill your Tesla." />}
         {pools.map((p) => (
-          <Card key={p.id}>
+          <Card key={p.id} pop>
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
-                <p className="font-bold">🛺 {p.vehicle.name} · {p.occupiedSeats}/{p.totalSeats} seats · {p.pickupZone}</p>
-                <div className="mt-1 space-y-0.5 text-sm text-slate-600">
+                <p className="font-display text-lg font-extrabold">🛺 {p.vehicle.name} · {p.occupiedSeats}/{p.totalSeats} seats · {p.pickupZone}</p>
+                <div className="mt-2 space-y-1 text-sm font-medium text-slate-600 dark:text-slate-300">
                   {p.members.map((m) => (
-                    <p key={m.id}>🧍 {m.passenger.name} — {m.rideRequest.pickupArea} → {m.rideRequest.dropoffArea} ({m.seats} seat{m.seats > 1 ? "s" : ""}, {fareBDT(m.farePaisa)})</p>
+                    <p key={m.id} className="rounded-xl bg-slate-100 px-2 py-1 dark:bg-night">🧍 {m.passenger.name} — {m.rideRequest.pickupArea} → {m.rideRequest.dropoffArea} ({m.seats} seat{m.seats > 1 ? "s" : ""}, {fareBDT(m.farePaisa)})</p>
                   ))}
                 </div>
               </div>
-              <Badge status={p.status} />
+              <Chip status={p.status} />
             </div>
-            <div className="mt-2"><Stepper status={p.status} /></div>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-3"><Stepper status={p.status} /></div>
+            <div className="mt-4 flex flex-wrap gap-2">
               {(NEXT[p.status] || []).map((to) => (
-                <Btn
-                  key={to}
-                  variant={to === "COMPLETED" ? "primary" : "ghost"}
-                  onClick={() => advance(p.id, to)}
-                >
-                  {to === "DRIVER_ARRIVED" ? "📍 I've arrived" : to === "STARTED" ? "▶ Start trip" : "✔ Complete trip"}
+                <Btn key={to} variant={to === "COMPLETED" ? "primary" : "ghost"} onClick={() => advance(p.id, to)}>
+                  {NEXT_LABEL[to]}
                 </Btn>
               ))}
               {["REQUESTED", "MATCHED", "DRIVER_ARRIVED"].includes(p.status) && (
                 <Btn variant="danger" onClick={() => advance(p.id, "CANCELLED")}>Cancel pool</Btn>
               )}
-              <Link href={`/pools/${p.id}`} className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold hover:bg-slate-200">Details</Link>
+              <Link href={`/pools/${p.id}`} className="btn-ghosty !min-h-0 px-4 py-2">Details</Link>
             </div>
           </Card>
         ))}

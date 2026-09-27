@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { api, fareBDT } from "@/lib/api";
-import { Badge, Card, ErrorNote, Spinner, Stepper } from "@/components/ui";
+import { Card, Chip, ErrorNote, IconBadge, Spinner, Stepper } from "@/components/ui";
 
 interface PoolDetail {
   id: string;
@@ -13,8 +13,6 @@ interface PoolDetail {
   totalSeats: number;
   occupiedSeats: number;
   createdAt: string;
-  startedAt: string | null;
-  completedAt: string | null;
   vehicle: { name: string; capacity: number };
   driver: { name: string };
   members: {
@@ -51,50 +49,51 @@ export default function PoolPage() {
   if (!pool) return <Spinner />;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-xl font-extrabold">Pool · {pool.vehicle.name}</h1>
-        <Badge status={pool.status} />
+        <h1 className="font-display text-2xl font-extrabold sm:text-3xl">Pool · {pool.vehicle.name} 🛺</h1>
+        <Chip status={pool.status} />
       </div>
 
-      <Card>
+      <Card shadow="amber">
         <Stepper status={pool.status} />
-        <div className="mt-3 grid gap-1 text-sm text-slate-600 sm:grid-cols-2">
-          <p>🛺 Driver: <span className="font-semibold text-slate-900">{pool.driver.name}</span></p>
-          <p>💺 Seats: <span className="font-semibold text-slate-900">{pool.occupiedSeats}/{pool.totalSeats}</span></p>
-          <p>📍 Pickup corridor: <span className="font-semibold text-slate-900">{pool.pickupZone}</span></p>
+        <div className="mt-4 grid gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 sm:grid-cols-2">
+          <p>🛺 Driver: <span className="font-bold text-ink dark:text-white">{pool.driver.name}</span></p>
+          <p>💺 Seats: <span className="font-bold text-ink dark:text-white">{pool.occupiedSeats}/{pool.totalSeats}</span></p>
+          <p>📍 Pickup corridor: <span className="font-bold text-ink dark:text-white">{pool.pickupZone}</span></p>
           <p>🕒 Created: {new Date(pool.createdAt).toLocaleString()}</p>
         </div>
       </Card>
 
-      <Card>
-        <h2 className="font-bold">Who&apos;s riding</h2>
-        <div className="mt-2 space-y-2">
+      <Card shadow="mint" pop>
+        <IconBadge emoji="🧍" bg="bg-pop-mint" />
+        <h2 className="font-display text-xl font-extrabold">Who&apos;s riding</h2>
+        <div className="mt-3 space-y-2">
           {pool.members.map((m) => (
-            <div key={m.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 p-3 text-sm">
+            <div key={m.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border-2 border-slate-200 p-3 text-sm font-medium dark:border-nightline">
               <p>
-                <span className="font-semibold">{m.passenger.name}</span>
-                <span className="text-slate-500"> · {m.rideRequest.pickupArea} → {m.rideRequest.dropoffArea} · {m.seats} seat{m.seats > 1 ? "s" : ""}</span>
+                <span className="font-bold">{m.passenger.name}</span>
+                <span className="text-slate-500 dark:text-slate-400"> · {m.rideRequest.pickupArea} → {m.rideRequest.dropoffArea} · {m.seats} seat{m.seats > 1 ? "s" : ""}</span>
               </p>
               <p className="flex items-center gap-2">
-                <Badge status={m.rideRequest.status} />
-                <span className="font-extrabold">{fareBDT(m.farePaisa)}</span>
+                <Chip status={m.rideRequest.status} />
+                <span className="rounded-full bg-pop-amber px-2 py-0.5 font-display font-extrabold">{fareBDT(m.farePaisa)}</span>
               </p>
             </div>
           ))}
         </div>
-        <p className="mt-2 text-xs text-slate-500">
-          Privacy: passengers only see their own fare row — drivers see everyone.
+        <p className="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400">
+          🔒 Privacy: passengers only see their own fare row — drivers see everyone.
         </p>
       </Card>
 
       <Card>
-        <h2 className="font-bold">Trip timeline</h2>
-        <ol className="mt-2 space-y-1.5 text-sm">
+        <h2 className="font-display text-xl font-extrabold">Trip timeline</h2>
+        <ol className="mt-3 space-y-2 text-sm font-medium">
           {pool.events.map((e) => (
-            <li key={e.id} className="flex flex-wrap gap-2 text-slate-600">
-              <span className="text-slate-400">{new Date(e.createdAt).toLocaleTimeString()}</span>
-              <span><Badge status={e.toStatus} /></span>
+            <li key={e.id} className="flex flex-wrap items-center gap-2 text-slate-600 dark:text-slate-300">
+              <span className="text-xs text-slate-400">{new Date(e.createdAt).toLocaleTimeString()}</span>
+              <Chip status={e.toStatus} />
               {e.note && <span>{e.note}</span>}
             </li>
           ))}
