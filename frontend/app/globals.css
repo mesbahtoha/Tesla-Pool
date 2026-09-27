@@ -131,9 +131,21 @@ html.dark .dotgrid {
 }
 
 /* ---------- Marquee ---------- */
+@keyframes marquee-x {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
 .marquee-track {
-  @apply flex w-max items-center whitespace-nowrap will-change-transform;
-  animation: marquee 28s linear infinite;
+  display: flex;
+  width: max-content;
+  align-items: center;
+  white-space: nowrap;
+  will-change: transform;
+  animation: marquee-x 28s linear infinite;
 }
 @media (max-width: 640px) {
   .marquee-track {
