@@ -10,6 +10,10 @@ Story cast (used consistently in seed data, tests, and docs): **Jashim** drives
 **Rafiq** (Banani → Gulshan 1) share Bullet. **Shirin** (Banani → Farmgate) is waiting —
 one seat left.
 
+## Live-link
+**Frontend:** https://tesla-pool-hcv6.vercel.app/
+**Backend:** https://tesla-pool-gamma.vercel.app/
+
 ## ✨ Features
 
 **Passenger (Nusrat / Rafiq / Shirin)**
@@ -346,4 +350,4 @@ Overall, AI was a development aid, not the developer of the project. I used it s
 
 ## 📹 Demo video
 
-> TODO: record ≤6 min (problem → engineering → tour) and link here.
+> https://drive.google.com/file/d/1Sv4TWxU_ah8V4aotkXp7nMesXi4S5sOR/view?usp=drive_link
